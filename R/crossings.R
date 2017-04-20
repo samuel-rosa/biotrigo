@@ -8,18 +8,38 @@
 #' 
 #' @details 
 #' \subsection{Base de dados}{
-#' A base de dados deve ser constituída 
+#' A base de dados consiste em uma tabela com três colunas: \code{genotipo_id}, com o número de identificação 
+#' único de cada genótipo, \code{genotipo_nome}, com o nome atribuído à cada genótipo, e 
+#' \code{cruzamento_fonte}, com o cruzamento que deu origem à cada genótipo.
 #' }
 #' 
 #' \subsection{Cruzamentos}{
-#' 
+#' Os cruzamentos são organizados em uma tabela com três colunas: \code{mae_id}, com o número de identificação
+#' único dos genótipos usados como mães, \code{pai_id}, com o número de identificação único dos genótipos 
+#' usados como pais, e \code{sementes_numero}, com o número de sementes.
 #' }
+#' 
+#' @note Tome cuidado com o sistema de codificação de caracteres usados ao salvar os arquivos da base de dados
+#' e cruzamentos. Dê preferência ao sistema UTF-8. No MS Excel use \emph{Arquivo} > \emph{Salvar como} > 
+#' \emph{CSV UTF-8}.
 #' 
 #' @return
 #' Um objeto do tipo data.frame contendo o número de identificação dos genótipos mãe e pai, o nome do 
 #' cruzamento e o número de sementes.
 #' 
-rm(list = ls())
+#' @author Alessandro Samuel-Rosa \email{alessandrosamuelrosa@@gmail.com}
+#' 
+#' @examples
+#' \dontrun{
+#' tmp <- combinacoes(
+#'   base.de.dados = read.csv(
+#'     'data/database.csv', sep = ",", header = TRUE, stringsAsFactors = FALSE, na.strings = ""),
+#'   cruzamento = read.csv(
+#'     'data/cruzas.csv', sep = ",", header = TRUE, stringsAsFactors = FALSE))
+#' tmp
+#' write.csv(tmp, "data/combinations.csv")
+#' }
+# MAIN FUNCTION ###############################################################################################
 combinacoes <-
   function (base.de.dados, cruzamento) {
     
@@ -58,21 +78,25 @@ combinacoes <-
     cross_names <- lapply(cross_names, function (x) {
       suppressWarnings(as.numeric(x))
     })
+    
     # Cruza >= 4
     idx <- sapply(cross_names, function (x) all(is.na(x)))
     n <- paste("/", sapply(cross_names[!idx], max, na.rm = TRUE) + 1, "/", sep = "")
     full_cross$cruzamento_nome[!idx] <- 
       gsub(pattern = "/?/", n, x = full_cross$cruzamento_nome[!idx], fixed = TRUE)
+    
     # Cruza == 3
     idx2 <- grep(pattern = "//", full_cross$cruzamento_nome[idx])
     n <- paste("/", 3, "/", sep = "")
     full_cross$cruzamento_nome[idx][idx2] <-
       gsub(pattern = "/?/", n, x = full_cross$cruzamento_nome[idx][idx2], fixed = TRUE)
+    
     # Cruza == 2
     idx1 <- gsub("/?/", " ", full_cross$cruzamento_nome[idx][-idx2], fixed = TRUE)
     idx1 <- grep(pattern = "/", idx1)
     full_cross$cruzamento_nome[idx][-idx2][idx1] <- 
       gsub("/?/", "//", full_cross$cruzamento_nome[idx][-idx2][idx1], fixed = TRUE)
+    
     # Cruza == 1
     full_cross$cruzamento_nome[idx][-idx2][-idx1] <-
       gsub("/?/", "/", full_cross$cruzamento_nome[idx][-idx2][-idx1], fixed = TRUE)
@@ -80,13 +104,3 @@ combinacoes <-
     # Resultado
     return (full_cross)
   }
-#' 
-#' @examples
-#' 
-tmp <- combinacoes(
-  base.de.dados = read.csv(
-    'data/database.csv', sep = ",", header = TRUE, stringsAsFactors = FALSE, na.strings = ""),
-  cruzamento = read.csv(
-    'data/cruzas.csv', sep = ",", header = TRUE, stringsAsFactors = FALSE))
-tmp
-write.csv(tmp, "data/combinations.csv")
