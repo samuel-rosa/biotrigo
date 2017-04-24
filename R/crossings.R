@@ -82,15 +82,21 @@ combinacoes <-
     
     # Cruza >= 4
     idx <- sapply(cross_names, function (x) all(is.na(x)))
-    n <- paste("/", sapply(cross_names[!idx], max, na.rm = TRUE) + 1, "/", sep = "")
-    full_cross$cruzamento_nome[!idx] <- 
-      gsub(pattern = "/?/", n, x = full_cross$cruzamento_nome[!idx], fixed = TRUE)
+    if (!all(idx)) { # Evitar problemas quando não há cruzamentos complexos.
+      n <- paste("/", sapply(cross_names[!idx], max, na.rm = TRUE) + 1, "/", sep = "")
+      full_cross$cruzamento_nome[!idx] <- 
+        gsub(pattern = "/?/", n, x = full_cross$cruzamento_nome[!idx], fixed = TRUE)
+    }
     
     # Cruza == 3
     idx2 <- grep(pattern = "//", full_cross$cruzamento_nome[idx])
-    n <- paste("/", 3, "/", sep = "")
-    full_cross$cruzamento_nome[idx][idx2] <-
-      gsub(pattern = "/?/", n, x = full_cross$cruzamento_nome[idx][idx2], fixed = TRUE)
+    if (length(idx2) > 0) { # Evitar problemas quando não há cruzamentos complexos.
+      n <- paste("/", 3, "/", sep = "")
+      full_cross$cruzamento_nome[idx][idx2] <-
+        gsub(pattern = "/?/", n, x = full_cross$cruzamento_nome[idx][idx2], fixed = TRUE)
+    } else {
+      idx2 <- length(idx) + 1 # Evitar problemas quando não há cruzamentos complexos.
+    }
     
     # Cruza == 2
     idx1 <- gsub("/?/", " ", full_cross$cruzamento_nome[idx][-idx2], fixed = TRUE)

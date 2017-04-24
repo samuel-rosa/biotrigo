@@ -40,9 +40,10 @@ e cruzamentos. Dê preferência ao sistema UTF-8. No MS Excel use \emph{Arquivo}
 \dontrun{
 tmp <- combinacoes(
   base.de.dados = read.csv(
-    'data/database.csv', sep = ",", header = TRUE, stringsAsFactors = FALSE, na.strings = ""),
+    'data/database.csv', sep = ",", header = TRUE, stringsAsFactors = FALSE, na.strings = "", 
+    encoding = "UTF-8"),
   cruzamento = read.csv(
-    'data/cruzas.csv', sep = ",", header = TRUE, stringsAsFactors = FALSE))
+    'data/cruzas.csv', sep = ",", header = TRUE, stringsAsFactors = FALSE, encoding = "UTF-8"))
 tmp
 write.csv(tmp, "data/combinations.csv")
 }
