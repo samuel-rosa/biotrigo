@@ -28,7 +28,7 @@
 #' cruzamento e o número de sementes.
 #' 
 #' @author Alessandro Samuel-Rosa \email{alessandrosamuelrosa@@gmail.com}
-#' 
+#' @export
 #' @examples
 #' \dontrun{
 #' tmp <- combinacoes(
