@@ -1,13 +1,14 @@
 Package: biotrigo
 Type: Package
 Title: Ferramentas para a Biotrigo Genética no R
-Version: 1.0
-Date: 2017-04-20
+Version: 1.1
+Date: 2017-05-01
 Author: Alessandro Samuel-Rosa
 Maintainer: Alessandro Samuel-Rosa <alessandrosamuelrosa@gmail.com>
 Description: Conjunto de ferramentas para processamento de dados desenvolvidas especificamente para atender
-             algumas das necessidades diárias da equipe da Biotrigo Genética.  
-License: License: GPL (>= 3)
+             algumas das necessidades diárias da equipe da Biotrigo Genética.
+Imports: stringr
+License: GPL (>= 2)
 Language: pt
 RoxygenNote: 6.0.1
 Encoding: UTF-8
