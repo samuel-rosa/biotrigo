@@ -76,16 +76,19 @@ combinacoes <-
     # Pressuposto: nenhum genótipo ou cruzamento é identificado usando apenas números.
     # cross_number <- rep(NA, nrow(full_cross))
     cross_names <- lapply(full_cross$cruzamento_nome, stringr::str_split_fixed, pattern = "/", n = Inf)
-    cross_names <- lapply(cross_names, function (x) {
-      suppressWarnings(as.numeric(x))
-    })
+    cross_names <- lapply(cross_names, function (x) suppressWarnings(as.numeric(x)))
     
     # Cruza >= 4
+    # Primeiro verifica-se se o objeto 'cross_names' possui valores numéricos. A presença de valores numéricos
+    # indica que há genótipos proveninentes de cruzas de 3ª ou mais gerações (pois cruzas de 2ª geração são 
+    # indicadas com '//'.) Nesses casos, o valor numérico atribuído será sempre >= 4.
     idx <- sapply(cross_names, function (x) all(is.na(x)))
     if (!all(idx)) { # Evitar problemas quando não há cruzamentos complexos.
       n <- paste("/", sapply(cross_names[!idx], max, na.rm = TRUE) + 1, "/", sep = "")
-      full_cross$cruzamento_nome[!idx] <- 
-        gsub(pattern = "/?/", n, x = full_cross$cruzamento_nome[!idx], fixed = TRUE)
+      full_cross$cruzamento_nome[!idx] <-
+        lapply(1:length(full_cross$cruzamento_nome[!idx]), function (i) {
+          gsub(pattern = "/?/", n[i], x = full_cross$cruzamento_nome[!idx][i], fixed = TRUE)
+        })
     }
     
     # Cruza == 3
